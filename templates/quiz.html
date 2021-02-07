@@ -20,35 +20,45 @@
             <span class="text-decoration-underline red-text question-text compact-text">병훈이가 만남을 시작할 때 고백한 교회 근처의 카페는 어디일까요?</span>
         </div>
         <small class="text-muted compact-text mb-3"><strong>키링 이벤트</strong>&mdash;정답자 중 5명 추천</small>
-        <form class="needs-validation" novalidate>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="name" placeholder="이름" required>
-                <label for="name" class="compact-text text-muted">이름</label>
+        <form class="needs-validation row g-3" novalidate>
+            <div class="col-sm-6 col-md">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="name" placeholder="이름" required>
+                    <label for="name" class="compact-text text-muted">이름</label>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <select class="form-select form-control" id="grade-select" aria-label="Grade name" required>
-                    <option value="" selected disabled>학년 이름을 선택해주세요.</option>
-                    {% for i, name in grade_names %}
-                        <option value="{{ i }}">{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <label for="grade-select" class="compact-text">학년 이름</label>
+            <div class="col-sm-6 col-md">
+                <div class="form-floating">
+                    <select class="form-select form-control" id="grade-select" aria-label="Grade name" required>
+                        <option value="" selected disabled>학년 이름을 선택해주세요.</option>
+                        {% for i, name in grade_names %}
+                            <option value="{{ i }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="grade-select" class="compact-text">학년 이름</label>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <select class="form-select form-control" id="cafe-select" multiple required
-                        aria-label="Cafe name near Sarang Curch">
-                    {% for i, name in cafe_names %}
-                        <option value="{{ i }}">{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
+            <div class="col-sm-12 col-md">
+                <div class="form-floating">
+                    <select class="form-select form-control" id="cafe-select" multiple required
+                            aria-label="Cafe name near Sarang Curch">
+                        {% for i, name in cafe_names %}
+                            <option value="{{ i }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <textarea class="form-control compact-text" placeholder="하고싶은 말" id="feedback"></textarea>
-                <label for="feedback" class="text-muted compact-text">하고싶은 말이 있다면 자유롭게 남겨주세요. (선택)</label>
+            <div class="col-12">
+                <div class="form-floating">
+                    <textarea class="form-control compact-text" placeholder="하고싶은 말" id="feedback"></textarea>
+                    <label for="feedback" class="text-muted compact-text">하고싶은 말이 있다면 자유롭게 남겨주세요. (선택)</label>
+                </div>
             </div>
-            <div class="d-grid d-md-flex justify-content-md-end">
-                <button type="submit" class="btn btn-submit px-4 compact-text">제출</button>
+            <div class="col-12">
+                <div class="d-grid d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-submit px-4 compact-text">제출</button>
+                </div>
             </div>
         </form>
     </div>
