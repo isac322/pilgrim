@@ -33,7 +33,3 @@ def index():
         cafe_names=enumerate(cafe_names),
         grade_names=enumerate(grade_names),
     )
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
