@@ -19,7 +19,7 @@
         (function () {
             'use strict'
 
-            var btnEventToast = document.getElementById('event-toast');
+            const btnEventToast = document.getElementById('event-toast');
 
             if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
                 btnEventToast.Toast.hide();
