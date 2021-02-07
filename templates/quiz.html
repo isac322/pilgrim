@@ -131,12 +131,7 @@
                 return savedData.hasOwnProperty('name') && savedData.hasOwnProperty('grade_name') && savedData.hasOwnProperty('cafe_name');
             }
 
-            const nameField = document.getElementById('name');
-            const gradeNameField = document.getElementById('grade-select');
-            const cafeNameField = document.getElementById('cafe-select');
-            const cafeOptions = Array.from(cafeNameField.getElementsByTagName('option'));
-
-            window.addEventListener('load', () => {
+            function loadAnswer() {
                 if (typeof (Storage) === "undefined" || localStorage.getItem('submittedData') === null) return;
 
                 let submittedData = localStorage.getItem('submittedData');
@@ -148,6 +143,12 @@
 
                 if (!validateSavedFormData(submittedData)) return;
 
+                const nameField = document.getElementById('name');
+                const gradeNameField = document.getElementById('grade-select');
+                const cafeNameField = document.getElementById('cafe-select');
+                const cafeOptions = Array.from(cafeNameField.getElementsByTagName('option'));
+                const feedbackField = document.getElementById('feedback');
+
                 nameField.value = submittedData.name;
                 gradeNameField.value = submittedData.grade_name;
                 if (Array.isArray(submittedData.cafe_name)) {
@@ -155,9 +156,12 @@
                 } else {
                     cafeNameField.value = submittedData.cafe_name;
                 }
+                feedbackField.value = submittedData.feedback;
                 eventForm.checkValidity();
                 eventForm.classList.add('was-validated');
-            });
+            }
+
+            window.addEventListener('load', loadAnswer);
 
             eventForm.addEventListener(
                 'submit',
