@@ -13,7 +13,7 @@ app = Flask(__name__, static_url_path='')
 @validate()
 def submit_answer(body: QuizForm):
     request.is_multiprocess
-    body.grade
+    body.grade_name
     return 'Hello World!'
 
 

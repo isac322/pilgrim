@@ -1,8 +1,10 @@
-from pydantic import BaseModel, conint, constr
+from typing import Optional, Sequence, Union
+
+from pydantic import BaseModel, constr
 
 
 class QuizForm(BaseModel):
-    grade: conint(gt=0, lt=15)
-    name: str
-    phone_number: constr(regex=r'^01[016789](:?[0-9]{3,4})(:?[0-9]{4})$')
-    answer: str
+    grade_name: constr(min_length=1)
+    name: constr(min_length=1)
+    cafe_name: Union[Sequence[str], constr(min_length=1)]
+    feedback: Optional[str]
