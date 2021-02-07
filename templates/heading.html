@@ -1,0 +1,48 @@
+{% macro style() %}
+    <style lang="css" type="text/css">
+        .headings {
+            font-family: "Freight Big Pro", serif;
+            letter-spacing: -1pt;
+        }
+
+        .leading-text {
+            margin-left: 0.2em;
+            font-size: 1.3em;
+        }
+
+        .display-3 {
+            font-size: 3.0em;
+        }
+
+        @media (min-width: 48em) {
+            .leading-text {
+                font-size: 2.0em;
+            }
+
+            .display-3 {
+                font-size: 5.2em;
+            }
+        }
+
+        @media (min-width: 62em) {
+            .leading-text {
+                font-size: 2.5em;
+            }
+
+            .display-3 {
+                font-size: 6.2em;
+            }
+        }
+
+        @media (min-width: 75em) {
+            .display-3 {
+                font-size: 7.2em;
+            }
+        }
+    </style>
+{% endmacro %}
+
+{% macro html() %}
+    <h4 class="text-start red-text headings leading-text my-0">A new command I give you :</h4>
+    <h1 class="text-start red-text headings display-3 mb-4">Love one another</h1>
+{% endmacro %}
