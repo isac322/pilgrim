@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'heading.html' import style as heading_style, html as heading_html %}
+{% from 'event_toast.html' import style as event_toast_style, html as event_toast_html, script as event_toast_script %}
 {% from 'qna.html' import style as qna_style, html as qna_html %}
 {% from 'quiz.html' import style as quiz_style, html as quiz_html, script as quiz_script %}
 
@@ -22,24 +23,16 @@
         .tall-line {
             line-height: 1.8;
         }
-
-        .toast.hide {
-            display: none !important;
-        }
     </style>
     {{ heading_style() }}
+    {{ event_toast_style() }}
     {{ qna_style() }}
     {{ quiz_style() }}
 {% endblock %}
 
 {% block content %}
     {{ heading_html() }}
-
-    <div class="toast d-flex align-items-center fade show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body compact-text red-text">✨ 페이지 하단의 키링 이벤트에 참여해주세요!</div>
-        <button id="event-toast" type="button" class="btn-close ms-auto me-2" data-dismiss="toast"
-                data-bs-dismiss="toast" aria-label="Close" data-autohide="false" data-delay="0"></button>
-    </div>
+    {{ event_toast_html() }}
 
     {% for i, data in qnas %}
         {{ qna_html(offset + i, data['question'], data['jay'], data['isac']) }}
@@ -50,18 +43,6 @@
 
 
 {% block script %}
-    <script lang="js">
-        (function () {
-            'use strict'
-
-            var btnEventToast = document.getElementById('event-toast');
-
-            if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
-                btnEventToast.Toast.hide();
-            } else {
-                btnEventToast.Toast.show();
-            }
-        })()
-    </script>
+    {{ event_toast_script() }}
     {{ quiz_script() }}
 {% endblock %}
