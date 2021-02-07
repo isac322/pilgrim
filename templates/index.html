@@ -22,6 +22,10 @@
         .tall-line {
             line-height: 1.8;
         }
+
+        .toast.hide {
+            display: none !important;
+        }
     </style>
     {{ heading_style() }}
     {{ qna_style() }}
@@ -31,11 +35,10 @@
 {% block content %}
     {{ heading_html() }}
 
-    <div class="toast d-flex align-items-center fade show" role="alert" aria-live="assertive"
-         aria-atomic="true">
-        <div class="toast-body red-text">✨ 페이지 하단의 키링 이벤트에 참여해주세요!</div>
+    <div class="toast d-flex align-items-center fade show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body compact-text red-text">✨ 페이지 하단의 키링 이벤트에 참여해주세요!</div>
         <button id="event-toast" type="button" class="btn-close ms-auto me-2" data-dismiss="toast"
-                data-bs-dismiss="toast" aria-label="Close"></button>
+                data-bs-dismiss="toast" aria-label="Close" data-autohide="false"></button>
     </div>
 
     {% for i, data in qnas %}
@@ -48,15 +51,12 @@
 
 {% block script %}
     <script lang="js">
-        document
-            .getElementById('event-toast')
-            .closest('.toast')
-            .addEventListener(
-                'hidden.bs.toast',
-                function (event) {
-                    event.target.classList.add('visually-hidden');
-                },
-                false
-            );
+        var btnEventToast = document.getElementById('event-toast');
+
+        if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
+            btnEventToast.Toast.hide();
+        } else {
+            btnEventToast.Toast.show();
+        }
     </script>
 {% endblock %}
