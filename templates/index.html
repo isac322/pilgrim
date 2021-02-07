@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% from 'heading.html' import style as heading_style, html as heading_html %}
+{% from 'qna.html' import style as qna_style, html as qna_html %}
+{% from 'quiz.html' import style as quiz_style, html as quiz_html %}
+
+{% block html_heads %}
+    <style lang="css" type="text/css">
+        .red-text {
+            color: #d63d1e !important;
+        }
+
+        .compact-text {
+            transform: scaleY(0.98);
+        }
+
+        .question-text {
+            text-decoration-color: #1d282c !important;
+            text-underline-offset: 0.25em;
+        }
+
+        .tall-line {
+            line-height: 1.8;
+        }
+    </style>
+    {{ heading_style() }}
+    {{ qna_style() }}
+    {{ quiz_style() }}
+{% endblock %}
+
+{% block content %}
+    {{ heading_html() }}
+
+    <div class="toast d-flex align-items-center fade show" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="toast-body red-text">✨ 페이지 하단의 키링 이벤트에 참여해주세요!</div>
+        <button id="event-toast" type="button" class="btn-close ms-auto me-2" data-dismiss="toast"
+                data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+
+    {% for i, data in qnas %}
+        {{ qna_html(offset + i, data['question'], data['jay'], data['isac']) }}
+    {% endfor %}
+
+    {{ quiz_html(cafe_names, grade_names) }}
+{% endblock %}
+
+
+{% block script %}
+    <script lang="js">
+        document
+            .getElementById('event-toast')
+            .closest('.toast')
+            .addEventListener(
+                'hidden.bs.toast',
+                function (event) {
+                    event.target.classList.add('visually-hidden');
+                },
+                false
+            );
+    </script>
+{% endblock %}
