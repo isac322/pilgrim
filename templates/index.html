@@ -2,7 +2,7 @@
 
 {% from 'heading.html' import style as heading_style, html as heading_html %}
 {% from 'qna.html' import style as qna_style, html as qna_html %}
-{% from 'quiz.html' import style as quiz_style, html as quiz_html %}
+{% from 'quiz.html' import style as quiz_style, html as quiz_html, script as quiz_script %}
 
 {% block html_heads %}
     <style lang="css" type="text/css">
@@ -51,12 +51,17 @@
 
 {% block script %}
     <script lang="js">
-        var btnEventToast = document.getElementById('event-toast');
+        (function () {
+            'use strict'
 
-        if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
-            btnEventToast.Toast.hide();
-        } else {
-            btnEventToast.Toast.show();
-        }
+            var btnEventToast = document.getElementById('event-toast');
+
+            if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
+                btnEventToast.Toast.hide();
+            } else {
+                btnEventToast.Toast.show();
+            }
+        })()
     </script>
+    {{ quiz_script() }}
 {% endblock %}
