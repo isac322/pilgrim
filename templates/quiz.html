@@ -10,6 +10,10 @@
             padding-top: 0.8em;
             padding-bottom: 0.8em;
         }
+
+        #answer-error-model .modal-body, .modal-footer {
+            background-color: #fcf8f3 !important;
+        }
     </style>
 {% endmacro %}
 
@@ -20,71 +24,209 @@
             <span class="text-decoration-underline red-text question-text compact-text">병훈이가 만남을 시작할 때 고백한 교회 근처의 카페는 어디일까요?</span>
         </div>
         <small class="text-muted compact-text mb-3"><strong>키링 이벤트</strong>&mdash;정답자 중 5명 추천</small>
-        <form class="needs-validation row g-3" novalidate>
-            <div class="col-sm-6 col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="name" placeholder="이름" required>
-                    <label for="name" class="compact-text text-muted">이름</label>
+        <form id="event-answer" action="/answer" class="needs-validation" novalidate>
+            <fieldset class="row g-3">
+                <div class="col-sm-6 col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="이름" required>
+                        <label for="name" class="compact-text text-muted">이름</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-6 col-md">
-                <div class="form-floating">
-                    <select class="form-select form-control" id="grade-select" aria-label="Grade name" required>
-                        <option value="" selected disabled>학년 이름을 선택해주세요.</option>
-                        {% for i, name in grade_names %}
-                            <option value="{{ i }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="grade-select" class="compact-text">학년 이름</label>
+                <div class="col-sm-6 col-md">
+                    <div class="form-floating">
+                        <select class="form-select form-control" id="grade-select" aria-label="Grade name"
+                                name="grade_name"
+                                required>
+                            <option value="" selected disabled>학년 이름을 선택해주세요.</option>
+                            {% for i, name in grade_names %}
+                                <option value="{{ i }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="grade-select" class="compact-text">학년 이름</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12 col-md">
-                <div class="form-floating">
-                    <select class="form-select form-control" id="cafe-select" multiple required
-                            aria-label="Cafe name near Sarang Curch">
-                        {% for i, name in cafe_names %}
-                            <option value="{{ i }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
+                <div class="col-sm-12 col-md">
+                    <div class="form-floating">
+                        <select class="form-select form-control" id="cafe-select" name="cafe_name" multiple required
+                                aria-label="Cafe name near Sarang Curch">
+                            {% for i, name in cafe_names %}
+                                <option value="{{ i }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="form-floating">
-                    <textarea class="form-control compact-text" placeholder="하고싶은 말" id="feedback"></textarea>
-                    <label for="feedback" class="text-muted compact-text">하고싶은 말이 있다면 자유롭게 남겨주세요. (선택)</label>
+                <div class="col-12">
+                    <div class="form-floating">
+                    <textarea class="form-control compact-text" placeholder="하고싶은 말" id="feedback"
+                              name="feedback"></textarea>
+                        <label for="feedback" class="text-muted compact-text">하고싶은 말이 있다면 자유롭게 남겨주세요. (선택)</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="d-grid d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-submit px-4 compact-text">제출</button>
+                <div class="col-12">
+                    <div class="d-grid d-md-flex justify-content-md-end">
+                        <button id="btn-submit" type="submit" class="btn btn-submit px-4 compact-text">제출</button>
+                    </div>
                 </div>
-            </div>
+            </fieldset>
         </form>
+        <div class="modal fade hide" id="answer-error-model" tabindex="-1" aria-labelledby="answer-error-model-title"
+             aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title">
+                            <strong id="answer-error-model-title" class="compact-text">알 수 없는 에러</strong>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-0">
+                        <p class="m-0" id="answer-error-model-content">
+                            알 수 없는 에러가 발생했습니다.<br>잠시 후에 다시 시도해주세요.
+                        </p>
+                    </div>
+                    <div class="modal-footer border-top-0"></div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endmacro %}
 
 {% macro script() %}
     <script lang="js">
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
         (function () {
             'use strict'
 
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
+            const eventForm = document.getElementById('event-answer');
+            const answerErrorModal = new BSN.Modal('#answer-error-model');
+            const answerErrorModalTitle = document.getElementById('answer-error-model-title');
+            const answerErrorModalContent = document.getElementById('answer-error-model-content');
 
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
+            function serializeForm(form) {
+                return Array.from(new FormData(form).entries())
+                    .reduce(
+                        (reduced, [key, val]) => {
+                            if (reduced[key] !== undefined) {
+                                if (!Array.isArray(reduced[key])) {
+                                    reduced[key] = [reduced[key]];
+                                }
+                                reduced[key].push(val);
+                            } else {
+                                reduced[key] = val;
+                            }
+                            return reduced
+                        },
+                        {}
+                    );
+            }
+
+            function saveAnswer(form) {
+                if (typeof (Storage) === "undefined") return;
+
+                const serializedForm = serializeForm(form);
+                localStorage.setItem('submittedData', JSON.stringify(serializedForm));
+            }
+
+            function validateSavedFormData(savedData) {
+                return savedData.hasOwnProperty('name') && savedData.hasOwnProperty('grade_name') && savedData.hasOwnProperty('cafe_name');
+            }
+
+            const nameField = document.getElementById('name');
+            const gradeNameField = document.getElementById('grade-select');
+            const cafeNameField = document.getElementById('cafe-select');
+            const cafeOptions = Array.from(cafeNameField.getElementsByTagName('option'));
+
+            window.addEventListener('load', () => {
+                if (typeof (Storage) === "undefined" || localStorage.getItem('submittedData') === null) return;
+
+                let submittedData = localStorage.getItem('submittedData');
+                try {
+                    submittedData = JSON.parse(submittedData);
+                } catch (e) {
+                    return;
+                }
+
+                if (!validateSavedFormData(submittedData)) return;
+
+                nameField.value = submittedData.name;
+                gradeNameField.value = submittedData.grade_name;
+                if (Array.isArray(submittedData.cafe_name)) {
+                    submittedData.cafe_name.forEach(v => cafeOptions.find(c => c.value === v).selected = true);
+                } else {
+                    cafeNameField.value = submittedData.cafe_name;
+                }
+                eventForm.checkValidity();
+                eventForm.classList.add('was-validated');
+            });
+
+            eventForm.addEventListener(
+                'submit',
+                function (event) {
+                    if (!eventForm.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                    }
+                    eventForm.classList.add('was-validated');
+                },
+                false
+            );
+
+            eventForm.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    saveAnswer(eventForm);
+                },
+                false
+            );
+
+            eventForm.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+
+                    answerErrorModalTitle.textContent = '준비 중';
+                    answerErrorModalContent.innerHTML = '아직 준비 중 입니다.<br>나중에 다시 시도해 주세요.';
+                    answerErrorModal.show();
+                },
+                false
+            );
+
+            async function uploadAnswer(event) {
+
+            }
+
+            eventForm.addEventListener(
+                'submit',
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const body = JSON.stringify(serializeForm(eventForm));
+
+                    const fieldsets = Array.from(eventForm.getElementsByTagName('fieldset'));
+                    fieldsets.forEach(fieldset => fieldset.setAttribute('disabled', 'true'));
+                    console.log(body);
+
+                    fetch(eventForm.getAttribute('action'), {
+                        method: 'POST',
+                        body: body,
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
                         }
+                    }).then(res => res.json())
+                        .then(response => console.log('Success:', JSON.stringify(response)))
+                        .catch(error => console.error('Error:', error));
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
+                    fieldsets.forEach(fieldset => fieldset.removeAttribute('disabled'));
+                },
+                false
+            );
         })()
     </script>
 {% endmacro %}
