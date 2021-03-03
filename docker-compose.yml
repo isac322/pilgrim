@@ -6,8 +6,4 @@ services:
     image: pilgrim
     build: .
     ports:
-      - "402:402"
-    environment:
-      NTHREAD: "3"
-      NPROC: "3"
-      PORT: "402"
+      - "80:80"
