@@ -7,7 +7,7 @@
     <meta name="msapplication-navbutton-color" content="#9f3013">
     <meta name="apple-mobile-web-app-status-bar-style" content="#9f3013">
     <title>병훈❤️주연 나머지 이야기 &plus; Event ✨</title>
-    <link rel="icon" href="{{ url_for('static', filename='png/favicon-128.png') }}" sizes="128x128">
+    <link rel="icon" href="{{ url_for('static', path='/png/favicon-128.png') }}" sizes="128x128">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <style lang="css" type="text/css">
@@ -22,8 +22,8 @@
 
         @font-face {
             font-family: "Freight Big Pro";
-            src: url("{{ url_for('static', filename='font/709edcea1f8e218d264c1a4dc0d36d0e.eot') }}"); /* IE9*/
-            src: url("{{ url_for('static', filename='font/709edcea1f8e218d264c1a4dc0d36d0e.eot') }}?#iefix") format("embedded-opentype"), /* IE6-IE8 */ url("{{ url_for('static', filename='/font/709edcea1f8e218d264c1a4dc0d36d0e.woff2') }}") format("woff2"), /* chrome firefox */ url("{{ url_for('static', filename='/font/709edcea1f8e218d264c1a4dc0d36d0e.woff') }}") format("woff"), /* chrome firefox */ url("{{ url_for('static', filename='/font/709edcea1f8e218d264c1a4dc0d36d0e.ttf') }}") format("truetype"), /* chrome firefox opera Safari, Android, iOS 4.2+*/ url("{{ url_for('static', filename='/font/709edcea1f8e218d264c1a4dc0d36d0e.svg') }}#Freight Big Pro") format("svg"); /* iOS 4.1- */
+            src: url("{{ url_for('static', path='/font/709edcea1f8e218d264c1a4dc0d36d0e.eot') }}"); /* IE9*/
+            src: url("{{ url_for('static', path='font/709edcea1f8e218d264c1a4dc0d36d0e.eot') }}?#iefix") format("embedded-opentype"), /* IE6-IE8 */ url("{{ url_for('static', path='/font/709edcea1f8e218d264c1a4dc0d36d0e.woff2') }}") format("woff2"), /* chrome firefox */ url("{{ url_for('static', path='/font/709edcea1f8e218d264c1a4dc0d36d0e.woff') }}") format("woff"), /* chrome firefox */ url("{{ url_for('static', path='/font/709edcea1f8e218d264c1a4dc0d36d0e.ttf') }}") format("truetype"), /* chrome firefox opera Safari, Android, iOS 4.2+*/ url("{{ url_for('static', path='/font/709edcea1f8e218d264c1a4dc0d36d0e.svg') }}#Freight Big Pro") format("svg"); /* iOS 4.1- */
         }
     </style>
     {% block html_heads %}{% endblock %}
@@ -46,7 +46,7 @@
     </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/3.0.14-e/bootstrap-native-v5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/3.0.14-f/bootstrap-native-v5.min.js"></script>
 {% block script %}{% endblock %}
 </body>
 </html>
