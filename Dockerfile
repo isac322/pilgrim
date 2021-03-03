@@ -1,8 +1,15 @@
+FROM python:3.9-slim AS dep
+
+RUN pip install --no-cache-dir poetry
+COPY poetry.lock pyproject.toml ./
+RUN poetry export -f requirements.txt -o /tmp/requirements.txt
+
 FROM python:3.9-alpine
 
-COPY ./requirements.txt /tmp
-RUN pip install --no-cache-dir -r /tmp/requirements.txt gunicorn==20.0.4
-
-COPY . /opt/project
-WORKDIR /opt/project
-CMD /usr/local/bin/gunicorn --access-logfile - --error-logfile - --workers $NPROC --threads $NTHREAD -b :$PORT app:app
+COPY --from=dep /tmp/requirements.txt /tmp/requirements.txt
+RUN apk add --update --no-cache --virtual .build-deps alpine-sdk python3-dev musl-dev libffi-dev \
+    && pip install --no-cache-dir -r /tmp/requirements.txt \
+    && apk --purge del .build-deps
+COPY . /pilgrim/
+WORKDIR /pilgrim
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
