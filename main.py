@@ -1,4 +1,5 @@
 import http
+import importlib.resources
 import json
 from pathlib import Path
 from typing import Sequence
@@ -8,7 +9,7 @@ from aiocache import cached
 from ddtrace import patch_all
 from fastapi import FastAPI
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, Response
+from starlette.responses import FileResponse, HTMLResponse, Response
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from tortoise.contrib.fastapi import register_tortoise
@@ -54,11 +55,24 @@ async def _read_json_resource(file_path: Path) -> str:
         return json.loads(await fp.read())
 
 
+image_path = importlib.resources.files('resource.images')
+image_map = {str(path.relative_to(image_path)): path for path in image_path.glob('*.jpg')}
+
+
+@app.get('/img/{image_name}', name='images')
+async def image(request: Request, image_name: str):
+    if image_name not in image_map:
+        return Response(status_code=http.HTTPStatus.NOT_FOUND)
+
+    return FileResponse(image_map[image_name])
+
+
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
     qnas = await _read_json_resource(_settings.qna_file_path)
     grade_names = await _read_json_resource(_settings.grade_names_file_path)
     cafe_names = await _read_json_resource(_settings.cafe_names_file_path)
+    image_path_list = map(lambda i: request.url_for('images', image_name=i), image_map.keys())
 
     return _templates.TemplateResponse(
         'index.html',
@@ -68,6 +82,7 @@ async def index(request: Request):
             offset=10,
             cafe_names=enumerate(cafe_names),
             grade_names=enumerate(grade_names),
+            image_names=tuple(enumerate(image_path_list)),
         ),
     )
 

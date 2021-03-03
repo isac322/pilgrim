@@ -4,6 +4,7 @@
 {% from 'event_toast.html' import style as event_toast_style, html as event_toast_html, script as event_toast_script %}
 {% from 'qna.html' import style as qna_style, html as qna_html %}
 {% from 'quiz.html' import style as quiz_style, html as quiz_html, script as quiz_script %}
+{% from 'gallery.html' import html as gallery_html, head_script as gallery_head %}
 
 {% block html_heads %}
     <style lang="css" type="text/css">
@@ -28,6 +29,7 @@
     {{ event_toast_style() }}
     {{ qna_style() }}
     {{ quiz_style() }}
+    {{ gallery_head() }}
 {% endblock %}
 
 {% block content %}
@@ -39,6 +41,7 @@
     {% endfor %}
 
     {{ quiz_html(cafe_names, grade_names) }}
+    {{ gallery_html(image_names) }}
 {% endblock %}
 
 
