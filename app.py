@@ -1,24 +1,26 @@
 import importlib.resources
 import json
 
-from flask import Flask, render_template, request
-from flask_pydantic import validate
+from fastapi import FastAPI
+from starlette.requests import Request
+from starlette.responses import HTMLResponse
+from starlette.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
 
 from models import QuizForm
 
-app = Flask(__name__, static_url_path='')
+app = FastAPI()
+app.mount('/static', StaticFiles(directory='static'), name='static')
+templates = Jinja2Templates(directory='templates')
 
 
-@app.route('/answer', methods=('POST',))
-@validate()
-def submit_answer(body: QuizForm):
-    request.is_multiprocess
-    body.grade_name
+@app.post('/answer')
+async def submit_answer(body: QuizForm):
     return 'Hello World!'
 
 
-@app.route('/', methods=('GET',))
-def index():
+@app.get('/', response_class=HTMLResponse)
+async def index(request: Request):
     with importlib.resources.open_text('resource', 'qna.json') as data_file:
         qnas = json.load(data_file)
     with importlib.resources.open_text('resource', 'grade_names.json') as data_file:
@@ -26,10 +28,13 @@ def index():
     with importlib.resources.open_text('resource', 'cafe_names.json') as data_file:
         cafe_names = json.load(data_file)
 
-    return render_template(
+    return templates.TemplateResponse(
         'index.html',
-        qnas=enumerate(qnas),
-        offset=10,
-        cafe_names=enumerate(cafe_names),
-        grade_names=enumerate(grade_names),
+        dict(
+            request=request,
+            qnas=enumerate(qnas),
+            offset=10,
+            cafe_names=enumerate(cafe_names),
+            grade_names=enumerate(grade_names),
+        ),
     )
