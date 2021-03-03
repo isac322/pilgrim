@@ -1,5 +1,6 @@
 FROM python:3.9-slim AS dep
 
+RUN apt-get update && apt-get install gcc libffi-dev cargo -y
 RUN pip install --no-cache-dir poetry
 COPY poetry.lock pyproject.toml ./
 RUN poetry export -f requirements.txt -o /tmp/requirements.txt
