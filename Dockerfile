@@ -13,4 +13,4 @@ RUN apk add --update --no-cache --virtual .build-deps alpine-sdk python3-dev mus
     && apk --purge del .build-deps
 COPY . /pilgrim/
 WORKDIR /pilgrim
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers"]
