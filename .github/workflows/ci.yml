@@ -32,5 +32,7 @@ jobs:
           push: true
           platforms: ${{ env.PLATFORMS }}
           tags: ${{ secrets.CUSTOM_REGISTRY }}/pilgrim:latest
+          cache-from: type=registry,ref=${{ secrets.CUSTOM_REGISTRY }}/pilgrim:latest
+          cache-to: type=inline
       - name: Inspect
         run: docker buildx imagetools inspect ${{ secrets.CUSTOM_REGISTRY }}/pilgrim:latest
