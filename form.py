@@ -1,10 +1,10 @@
-from typing import Optional, Sequence, Union
+from typing import Optional, Union
 
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, conset, constr
 
 
 class QuizForm(BaseModel):
-    grade_name: constr(min_length=1)
+    grade_name: int
     name: constr(min_length=1)
-    cafe_name: Union[Sequence[str], constr(min_length=1)]
+    cafe_name: conset(int, min_items=1, max_items=2)
     feedback: Optional[str]

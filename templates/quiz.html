@@ -4,8 +4,15 @@
             height: 100px;
         }
 
-        .btn-submit, .btn-submit:hover, .btn-submit:active, .btn-submit:visited {
+        .btn-before-submit, .btn-before-submit:hover, .btn-before-submit:active, .btn-before-submit:visited {
             background-color: #9f3013 !important;
+            color: #fcf8f3;
+            padding-top: 0.8em;
+            padding-bottom: 0.8em;
+        }
+
+        .btn-submitted, .btn-submitted:hover, .btn-submitted:active, .btn-submitted:visited {
+            background-color: #9f9f9f !important;
             color: #fcf8f3;
             padding-top: 0.8em;
             padding-bottom: 0.8em;
@@ -52,13 +59,16 @@
                 </div>
                 <div class="col-sm-12 col-md">
                     <div class="form-floating">
-                        <select class="form-select form-control" id="cafe-select" name="cafe_name" multiple required
+                        <select class="form-select" id="cafe-select" name="cafe_name" multiple required
                                 aria-label="Cafe name near Sarang Curch">
                             {% for i, name in cafe_names %}
                                 <option value="{{ i }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                         <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
+                        <div class="invalid-feedback">
+                            최대 2개 선택할 수 있습니다.
+                        </div>
                     </div>
                 </div>
                 <div class="col-12">
@@ -70,7 +80,9 @@
                 </div>
                 <div class="col-12">
                     <div class="d-grid d-md-flex justify-content-md-end">
-                        <button id="btn-submit" type="submit" class="btn btn-submit px-4 compact-text">제출</button>
+                        <button id="btn-submit" type="submit"
+                                class="btn btn-before-submit px-4 compact-text align-middle">제출
+                        </button>
                     </div>
                 </div>
             </fieldset>
@@ -86,7 +98,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body pb-0">
-                        <p class="m-0" id="answer-error-model-content">
+                        <p class="m-0">
                             서버에 문제가 생겼나봐요😰<br>잠시 후에 다시 시도해주세요!
                         </p>
                     </div>
@@ -104,8 +116,10 @@
 
             const eventForm = document.getElementById('event-answer');
             const answerErrorModal = new BSN.Modal('#answer-error-model');
-            const answerErrorModalTitle = document.getElementById('answer-error-model-title');
-            const answerErrorModalContent = document.getElementById('answer-error-model-content');
+            const submitSpinner = document.createElement('span');
+            submitSpinner.classList.add('spinner-border', 'spinner-border-sm', 'm-1');
+            submitSpinner.setAttribute('role', 'status');
+            submitSpinner.setAttribute('aria-hidden', 'true');
 
             function serializeForm(form) {
                 return Array.from(new FormData(form).entries())
@@ -136,6 +150,13 @@
                 return savedData.hasOwnProperty('name') && savedData.hasOwnProperty('grade_name') && savedData.hasOwnProperty('cafe_name');
             }
 
+            function onSubmittedButton() {
+                const btnSubmit = document.getElementById('btn-submit');
+                btnSubmit.textContent = '완료';
+                btnSubmit.classList.remove('btn-before-submit');
+                btnSubmit.classList.add('btn-submitted');
+            }
+
             function loadAnswer() {
                 if (typeof (Storage) === "undefined" || localStorage.getItem('submittedData') === null) return;
 
@@ -164,9 +185,30 @@
                 feedbackField.value = submittedData.feedback;
                 eventForm.checkValidity();
                 eventForm.classList.add('was-validated');
+
+                let submitSucceed = localStorage.getItem('submitSucceed');
+                try {
+                    submitSucceed = JSON.parse(submitSucceed);
+                } catch (e) {
+                    return;
+                }
+                if (submitSucceed) {
+                    onSubmittedButton();
+                }
             }
 
             window.addEventListener('load', loadAnswer);
+
+            document.getElementById('cafe-select').addEventListener('change', function (event) {
+                const btnSubmit = document.getElementById('btn-submit');
+                if (event.target.selectedOptions.length <= 2) {
+                    event.target.classList.remove('is-invalid');
+                    btnSubmit.disabled = false;
+                } else {
+                    event.target.classList.add('is-invalid');
+                    btnSubmit.disabled = true;
+                }
+            })
 
             eventForm.addEventListener(
                 'submit',
@@ -196,30 +238,18 @@
                 function (event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    event.stopImmediatePropagation();
 
-                    answerErrorModalTitle.textContent = '준비 중';
-                    answerErrorModalContent.innerHTML = '아직 준비 중 입니다.<br>나중에 다시 시도해 주세요.';
-                    answerErrorModal.show();
-                },
-                false
-            );
-
-            async function uploadAnswer(event) {
-
-            }
-
-            eventForm.addEventListener(
-                'submit',
-                function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    const body = JSON.stringify(serializeForm(eventForm));
+                    const formData = serializeForm(eventForm);
+                    if (!(formData.cafe_name instanceof Array)) {
+                        formData.cafe_name = [formData.cafe_name]
+                    }
+                    const body = JSON.stringify(formData);
 
                     const fieldsets = Array.from(eventForm.getElementsByTagName('fieldset'));
-                    fieldsets.forEach(fieldset => fieldset.setAttribute('disabled', 'true'));
-                    console.log(body);
+                    fieldsets.forEach(fieldset => fieldset.setAttribute('disabled', ''));
+                    const btnSubmit = document.getElementById('btn-submit');
+                    btnSubmit.textContent = '제출'
+                    btnSubmit.prepend(submitSpinner)
 
                     fetch(eventForm.getAttribute('action'), {
                         method: 'POST',
@@ -228,11 +258,29 @@
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    }).then(res => res.json())
-                        .then(response => console.log('Success:', JSON.stringify(response)))
-                        .catch(error => console.error('Error:', error));
-
-                    fieldsets.forEach(fieldset => fieldset.removeAttribute('disabled'));
+                    })
+                        .then(response => {
+                            switch (response.status) {
+                                case 201:
+                                onSubmittedButton();
+                                    if (typeof (Storage) !== "undefined") {
+                                        localStorage.setItem('submitSucceed', JSON.stringify(true));
+                                    }
+                                    break;
+                                case 422:
+                                    const result = response.json();
+                                case 400:
+                                    answerErrorModal.show();
+                                    break;
+                            }
+                        })
+                        .catch(answerErrorModal.show)
+                        .finally(() => {
+                            if (btnSubmit.firstChild === submitSpinner) {
+                                btnSubmit.removeChild(submitSpinner);
+                            }
+                            fieldsets.forEach(fieldset => fieldset.disabled = false);
+                        });
                 },
                 false
             );
