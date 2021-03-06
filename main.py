@@ -6,8 +6,9 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from tortoise.contrib.fastapi import register_tortoise
 
-from models import QuizForm
+from form import QuizForm
 
 app = FastAPI(title='Pilgrim', docs_url=None, redoc_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -38,3 +39,12 @@ async def index(request: Request):
             grade_names=enumerate(grade_names),
         ),
     )
+
+
+register_tortoise(
+    app,
+    db_url="sqlite://db.sqlite3",
+    modules={"models": ["models"]},
+    generate_schemas=True,
+    add_exception_handlers=True,
+)
