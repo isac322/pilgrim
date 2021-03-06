@@ -1,6 +1,5 @@
 import http
 import json
-import time
 from pathlib import Path
 from typing import Sequence
 
@@ -28,8 +27,6 @@ _settings = config.Settings()
 async def submit_answer(body: form.QuizForm):
     grade_names = await _read_json_resource(_settings.grade_names_file_path)
     cafe_names = await _read_json_resource(_settings.cafe_names_file_path)
-
-    time.sleep(3)
 
     if validate_answer(body, cafe_names, grade_names):
         await models.Answer.create(
