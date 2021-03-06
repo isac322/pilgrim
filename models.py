@@ -1,10 +1,15 @@
-from typing import Optional, Sequence, Union
+from tortoise import fields
+from tortoise.models import Model
 
-from pydantic import BaseModel, constr
 
+class Answer(Model):
+    id = fields.IntField(pk=True)
+    name = fields.CharField(64)
+    grade_name = fields.CharField(64)
+    cafe_name = fields.JSONField()
+    feedback = fields.TextField()
 
-class QuizForm(BaseModel):
-    grade_name: constr(min_length=1)
-    name: constr(min_length=1)
-    cafe_name: Union[Sequence[str], constr(min_length=1)]
-    feedback: Optional[str]
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Answer<id:{self.id}, name:{self.name}, grade_name:{self.grade_name}, cafe_name:{self.cafe_name}>'
