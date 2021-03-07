@@ -43,4 +43,5 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.CUSTOM_REGISTRY }}/pilgrim:latest
           cache-to: type=inline
       - name: Inspect
+        if: github.event_name != 'pull_request'
         run: docker buildx imagetools inspect ${{ secrets.CUSTOM_REGISTRY }}/pilgrim:latest
