@@ -7,6 +7,8 @@ RUN poetry export -f requirements.txt -o /tmp/requirements.txt
 
 FROM isac322/uvicorn:py3.9-performance
 
+MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
+
 COPY --from=dep /tmp/requirements.txt /tmp/requirements.txt
 RUN apk add --update --no-cache --virtual .build-deps alpine-sdk python3-dev musl-dev libffi-dev \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
