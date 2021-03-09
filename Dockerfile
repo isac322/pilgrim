@@ -5,7 +5,7 @@ RUN pip install --no-cache-dir poetry
 COPY poetry.lock pyproject.toml ./
 RUN poetry export -f requirements.txt -o /tmp/requirements.txt
 
-FROM python:3.9-alpine
+FROM isac322/uvicorn:py3.9-performance
 
 COPY --from=dep /tmp/requirements.txt /tmp/requirements.txt
 RUN apk add --update --no-cache --virtual .build-deps alpine-sdk python3-dev musl-dev libffi-dev \
@@ -13,4 +13,4 @@ RUN apk add --update --no-cache --virtual .build-deps alpine-sdk python3-dev mus
     && apk --purge del .build-deps
 COPY . /pilgrim/
 WORKDIR /pilgrim
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers", "--forwarded-allow-ips", "*"]
