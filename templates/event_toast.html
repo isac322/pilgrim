@@ -21,7 +21,7 @@
 
             const btnEventToast = document.getElementById('event-toast');
 
-            if (typeof (Storage) !== "undefined" && localStorage.getItem('submitted') !== null) {
+            if (typeof (Storage) !== "undefined" && localStorage.getItem('submitSucceed') !== null) {
                 btnEventToast.Toast.hide();
             } else {
                 btnEventToast.Toast.show();
