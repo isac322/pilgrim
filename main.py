@@ -19,7 +19,7 @@ import models
 
 patch_all()
 
-app = FastAPI(title='Pilgrim', version='0.2.4', docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title='Pilgrim', version='0.2.5', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
 _templates = Jinja2Templates(directory='templates')
 
