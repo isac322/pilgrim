@@ -5,6 +5,7 @@ from typing import Sequence
 
 import aiofiles
 from aiocache import cached
+from ddtrace import patch_all
 from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, Response
@@ -16,7 +17,9 @@ import config
 import form
 import models
 
-app = FastAPI(title='Pilgrim', version='0.2.4', docs_url=None, redoc_url=None, openapi_url=None)
+patch_all()
+
+app = FastAPI(title='Pilgrim', version='0.2.5', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
 _templates = Jinja2Templates(directory='templates')
 
