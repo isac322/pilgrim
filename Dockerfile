@@ -14,4 +14,5 @@ RUN apk add --update --no-cache --virtual .build-deps g++ linux-headers \
     && apk --purge del .build-deps
 COPY . /pilgrim/
 WORKDIR /pilgrim
-CMD ["main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers", "--forwarded-allow-ips", "*"]
+ENTRYPOINT ["/usr/local/bin/ddtrace-run"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers", "--forwarded-allow-ips", "*"]
