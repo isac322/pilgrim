@@ -17,7 +17,7 @@ import config
 import form
 import models
 
-app = FastAPI(title='Pilgrim', version='0.2.8', docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title='Pilgrim', version='0.2.9', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
 app.mount('/img', StaticFiles(directory='resource/images'), name='images')
 _templates = Jinja2Templates(directory='templates')
