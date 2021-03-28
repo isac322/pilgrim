@@ -61,7 +61,7 @@ async def _read_json_resource(file_path: Path) -> str:
 
 @cached()
 async def _list_image_files(parent_path: Path) -> Tuple[str, ...]:
-    return tuple(map(lambda p: p.name, parent_path.glob('*.jpg')))
+    return tuple(map(lambda p: p.name, parent_path.iterdir()))
 
 
 @app.get('/', response_class=HTMLResponse)
