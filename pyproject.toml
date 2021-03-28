@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pilgrim"
-version = "0.2.5"
+version = "0.2.6"
 description = ""
 authors = ["Byeonghoon Yoo <bh322yoo@gmail.com>"]
 
