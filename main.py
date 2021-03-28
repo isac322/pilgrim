@@ -79,12 +79,12 @@ async def index(request: Request):
         'index.html',
         dict(
             request=request,
-            qnas=enumerate(qnas),
+            qnas=qnas,
             interviewer_map=interviewer_map,
             offset=_settings.question_offset,
-            cafe_names=enumerate(cafe_names),
-            grade_names=enumerate(grade_names),
-            image_names=tuple(enumerate(image_path_list)),
+            cafe_names=cafe_names,
+            grade_names=grade_names,
+            image_names=tuple(image_path_list),
         ),
     )
 

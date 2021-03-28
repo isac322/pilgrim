@@ -50,8 +50,8 @@
                                 name="grade_name"
                                 required>
                             <option value="" selected disabled>학년 이름을 선택해주세요.</option>
-                            {% for i, name in grade_names %}
-                                <option value="{{ i }}">{{ name }}</option>
+                            {% for name in grade_names %}
+                                <option value="{{ loop.index0 }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                         <label for="grade-select" class="compact-text">학년 이름</label>
@@ -61,8 +61,8 @@
                     <div class="form-floating">
                         <select class="form-select" id="cafe-select" name="cafe_name" multiple required
                                 aria-label="Cafe name near Sarang Curch">
-                            {% for i, name in cafe_names %}
-                                <option value="{{ i }}">{{ name }}</option>
+                            {% for name in cafe_names %}
+                                <option value="{{ loop.index0 }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                         <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
