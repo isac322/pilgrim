@@ -28,24 +28,32 @@
     {{ heading_style() }}
     {{ event_toast_style() }}
     {{ qna_style() }}
-    {{ quiz_style() }}
+    {% if is_quiz_available %}
+        {{ quiz_style() }}
+    {% endif %}
     {{ gallery_head() }}
 {% endblock %}
 
 {% block content %}
     {{ heading_html() }}
-    {{ event_toast_html() }}
+    {% if is_quiz_available %}
+        {{ event_toast_html(quiz_dict['event_title']) }}
+    {% endif %}
 
     {% for qna in qnas %}
         {{ qna_html(offset + loop.index0, interviewer_map, qna['question'], qna['answers']) }}
     {% endfor %}
 
-    {{ quiz_html(cafe_names, grade_names) }}
+    {% if is_quiz_available %}
+        {{ quiz_html(cafe_names, grade_names, quiz_dict, quiz_deadline) }}
+    {% endif %}
     {{ gallery_html(image_names) }}
 {% endblock %}
 
 
 {% block script %}
     {{ event_toast_script() }}
-    {{ quiz_script() }}
+    {% if is_quiz_available %}
+        {{ quiz_script() }}
+    {% endif %}
 {% endblock %}

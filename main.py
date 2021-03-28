@@ -1,9 +1,10 @@
 import http
-import json
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping, Sequence, Tuple
+from typing import Any, Sequence, Tuple
 
 import aiofiles
+import ujson
 from aiocache import cached
 from ddtrace import patch_all
 from fastapi import FastAPI
@@ -21,6 +22,7 @@ _settings = config.Settings()
 
 GRADE_NAME_FILE_NAME = 'grade_names.json'
 CAFE_NAME_FILE_NAME = 'cafe_names.json'
+QUIZ_FILE_NAME = 'quiz.json'
 
 app = FastAPI(title='Pilgrim', version='0.2.9', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -41,7 +43,7 @@ async def submit_answer(body: form.QuizForm):
         await models.Answer.create(
             name=body.name,
             grade_name=grade_names[body.grade_name],
-            cafe_name=json.dumps(tuple(map(cafe_names.__getitem__, body.cafe_name))),
+            cafe_name=ujson.dumps(tuple(map(cafe_names.__getitem__, body.cafe_name))),
             feedback=body.feedback,
         )
         return Response(status_code=http.HTTPStatus.CREATED)
@@ -53,10 +55,10 @@ def validate_answer(body: form.QuizForm, cafe_names: Sequence[str], grade_names:
     return all(map(lambda e: e < len(cafe_names), body.cafe_name)) and body.grade_name < len(grade_names)
 
 
-@cached()
+@cached(ttl=30 * 60)  # 30min
 async def _read_json_resource(file_path: Path) -> Any:
     async with aiofiles.open(file_path) as fp:
-        return json.loads(await fp.read())
+        return ujson.loads(await fp.read())
 
 
 @cached()
@@ -69,7 +71,9 @@ async def index(request: Request):
     qnas = await _read_json_resource(_settings.resource_path / 'qna.json')
     grade_names = await _read_json_resource(_settings.resource_path / GRADE_NAME_FILE_NAME)
     cafe_names = await _read_json_resource(_settings.resource_path / CAFE_NAME_FILE_NAME)
-    interviewer_map: Mapping[str, str] = await _read_json_resource(_settings.resource_path / 'interviewer_map.json')
+    quiz_dict = await _read_json_resource(_settings.resource_path / QUIZ_FILE_NAME)
+    quiz_deadline = datetime.fromisoformat(quiz_dict['deadline'])
+    interviewer_map = await _read_json_resource(_settings.resource_path / 'interviewer_map.json')
     image_path_list = map(
         lambda p: request.url_for('images', path=p),
         await _list_image_files(_settings.resource_path / _settings.image_path),
@@ -85,6 +89,9 @@ async def index(request: Request):
             cafe_names=cafe_names,
             grade_names=grade_names,
             image_names=tuple(image_path_list),
+            is_quiz_available=datetime.now(timezone.utc) <= quiz_deadline,
+            quiz_dict=quiz_dict,
+            quiz_deadline=quiz_deadline,
         ),
     )
 

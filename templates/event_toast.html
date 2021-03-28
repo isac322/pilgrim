@@ -6,9 +6,9 @@
     </style>
 {% endmacro %}
 
-{% macro html() %}
+{% macro html(evnet_name) %}
     <div class="toast d-flex align-items-center fade show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body compact-text red-text">✨ 페이지 하단의 키링 이벤트에 참여해주세요!</div>
+        <div class="toast-body compact-text red-text">✨ 페이지 하단의 {{ evnet_name }}에 참여해주세요!</div>
         <button id="event-toast" type="button" class="btn-close ms-auto me-2" data-dismiss="toast"
                 data-bs-dismiss="toast" aria-label="Close" data-autohide="false" data-delay="0"></button>
     </div>
