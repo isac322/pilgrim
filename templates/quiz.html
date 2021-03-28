@@ -98,7 +98,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body pb-0">
-                        <p class="m-0">
+                        <p id="answer-error-model-body" class="m-0">
                             서버에 문제가 생겼나봐요😰<br>잠시 후에 다시 시도해주세요!
                         </p>
                     </div>
@@ -137,6 +137,18 @@
                         },
                         {}
                     );
+            }
+
+            function postCompleted() {
+                document.getElementById('answer-error-model-title').textContent = '성공!'
+                document.getElementById('answer-error-model-body').textContent = '제출되었습니다 :)'
+                answerErrorModal.show()
+            }
+
+            function postError() {
+                document.getElementById('answer-error-model-title').textContent = '미안해요!'
+                document.getElementById('answer-error-model-body').innerHTML = '서버에 문제가 생겼나봐요😰<br>잠시 후에 다시 시도해주세요!'
+                answerErrorModal.show()
             }
 
             function saveAnswer(form) {
@@ -262,19 +274,20 @@
                         .then(response => {
                             switch (response.status) {
                                 case 201:
-                                onSubmittedButton();
+                                    onSubmittedButton();
+                                    postCompleted();
                                     if (typeof (Storage) !== "undefined") {
                                         localStorage.setItem('submitSucceed', JSON.stringify(true));
                                     }
                                     break;
                                 case 422:
                                     const result = response.json();
-                                case 400:
-                                    answerErrorModal.show();
+                                default:
+                                    postError();
                                     break;
                             }
                         })
-                        .catch(answerErrorModal.show)
+                        .catch(postError)
                         .finally(() => {
                             if (btnSubmit.firstChild === submitSpinner) {
                                 btnSubmit.removeChild(submitSpinner);
