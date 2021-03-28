@@ -1,15 +1,14 @@
 import http
-import importlib.resources
 import json
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Tuple
 
 import aiofiles
 from aiocache import cached
 from ddtrace import patch_all
 from fastapi import FastAPI
 from starlette.requests import Request
-from starlette.responses import FileResponse, HTMLResponse, Response
+from starlette.responses import HTMLResponse, Response
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from tortoise.contrib.fastapi import register_tortoise
@@ -20,6 +19,7 @@ import models
 
 app = FastAPI(title='Pilgrim', version='0.2.8', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
+app.mount('/img', StaticFiles(directory='resource/images'), name='images')
 _templates = Jinja2Templates(directory='templates')
 
 _settings = config.Settings()
@@ -55,16 +55,9 @@ async def _read_json_resource(file_path: Path) -> str:
         return json.loads(await fp.read())
 
 
-image_path = importlib.resources.files('resource.images')
-image_map = {str(path.relative_to(image_path)): path for path in image_path.glob('*.jpg')}
-
-
-@app.get('/img/{image_name}', name='images')
-async def image(request: Request, image_name: str):
-    if image_name not in image_map:
-        return Response(status_code=http.HTTPStatus.NOT_FOUND)
-
-    return FileResponse(image_map[image_name])
+@cached()
+async def _list_image_files(parent_path: Path) -> Tuple[str, ...]:
+    return tuple(map(lambda p: p.name, parent_path.glob('*.jpg')))
 
 
 @app.get('/', response_class=HTMLResponse)
@@ -72,7 +65,7 @@ async def index(request: Request):
     qnas = await _read_json_resource(_settings.qna_file_path)
     grade_names = await _read_json_resource(_settings.grade_names_file_path)
     cafe_names = await _read_json_resource(_settings.cafe_names_file_path)
-    image_path_list = map(lambda i: request.url_for('images', image_name=i), image_map.keys())
+    image_path_list = map(lambda p: request.url_for('images', path=p), await _list_image_files(_settings.image_path))
 
     return _templates.TemplateResponse(
         'index.html',
