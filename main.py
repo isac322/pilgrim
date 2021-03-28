@@ -79,7 +79,7 @@ async def index(request: Request):
         dict(
             request=request,
             qnas=enumerate(qnas),
-            offset=10,
+            offset=_settings.question_offset,
             cafe_names=enumerate(cafe_names),
             grade_names=enumerate(grade_names),
             image_names=tuple(enumerate(image_path_list)),

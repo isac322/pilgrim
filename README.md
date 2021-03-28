@@ -58,6 +58,10 @@ resource
 페이지 하단에 보여줄 이미지를 포함하고있는 디렉토리 이름.
 `PILGRIM_RESOURCE_PATH` 와 조합해서 사용한다.
 
+#### `PILGRIM_QUESTION_OFFSET`
+
+질문 번호의 시작값.
+
 #### `PILGRIM_DD_ON`
 
 datadog 연동 파라미터.
