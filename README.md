@@ -3,7 +3,7 @@
 - 언어: Python
 - DB: SQLite3
 - 패키지 매니저: [Poetry](https://python-poetry.org/)
-- 웹서버 프레임워크: [FastAPI](https://fastapi.tiangolo.com/ko/)
+- 웹서버 프레임워크: [FastAPI](https://fastapi.tiangolo.com/ko/) (ASGI)
 - ORM: [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/)
 - 프론트 프레임워크: [Bootstrap 5](https://getbootstrap.com/)
 
@@ -58,6 +58,20 @@ resource
 페이지 하단에 보여줄 이미지를 포함하고있는 디렉토리 이름.
 `PILGRIM_RESOURCE_PATH` 와 조합해서 사용한다.
 
+#### `PILGRIM_QUESTION_OFFSET`
+
+질문 번호의 시작값.
+
 #### `PILGRIM_DD_ON`
 
 datadog 연동 파라미터.
+
+### 실행
+
+터미널에서 `PILGRIM_RESOURCE_PATH=resource_sample uvicorn main:app` 실행
+
+`uvicorn main:app` 앞에 앞에서 설명한 environment 값들을 붙여서 설정 가능.
+
+### Docker
+
+`docker-compose up` 실행

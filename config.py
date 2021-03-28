@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     resource_path: DirectoryPath = 'resource'
     db_url: str = 'sqlite://db.sqlite3'
     dd_on: bool = False
+    question_offset: int = 1
 
     class Config:
         env_prefix = 'pilgrim_'

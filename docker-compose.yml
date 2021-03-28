@@ -4,6 +4,8 @@ services:
   web:
     restart: always
     image: pilgrim
+    environment:
+      PILGRIM_RESOURCE_PATH: resource_sample
     build: .
     ports:
       - "80:80"
