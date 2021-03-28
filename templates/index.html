@@ -37,7 +37,7 @@
     {{ event_toast_html() }}
 
     {% for i, data in qnas %}
-        {{ qna_html(offset + i, data['question'], data['jay'], data['isac']) }}
+        {{ qna_html(offset + i, interviewer_map, data['question'], data['answers']) }}
     {% endfor %}
 
     {{ quiz_html(cafe_names, grade_names) }}

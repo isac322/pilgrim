@@ -50,6 +50,7 @@ resource
 ├── images
 │   ├── image1.jpg
 │   └── image2.png
+├── interviewer_map.json
 └── qna.json
 ```
 

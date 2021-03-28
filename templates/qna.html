@@ -8,19 +8,17 @@
     </style>
 {% endmacro %}
 
-{% macro html(index, question, answer_jay, answer_isac) %}
+{% macro html(index, interviewer_map, question, answers) %}
     <div class="d-flex flex-column tall-line mb-4">
         <div class="d-flex flex-row align-items-baseline">
             <strong class="question-number compact-text">Q{{ index }}</strong>
             <span class="text-decoration-underline red-text question-text compact-text">{{ question }}</span>
         </div>
-        <dl class="row mb-0">
-            <dt class="col-sm-1 pe-sm-0 text-start text-sm-end fw-normal red-text compact-text">주연:</dt>
-            <dd class="col-sm-11 mb-0 compact-text">{{ answer_jay }}</dd>
-        </dl>
-        <dl class="row mb-0">
-            <dt class="col-sm-1 pe-sm-0 text-start text-sm-end fw-normal red-text compact-text">병훈:</dt>
-            <dd class="col-sm-11 compact-text">{{ answer_isac }}</dd>
-        </dl>
+        {% for interviewer, answer in answers.items() %}
+            <dl class="row mb-0">
+                <dt class="col-sm-1 pe-sm-0 text-start text-sm-end fw-normal red-text compact-text">{{ interviewer_map[interviewer] }}:</dt>
+                <dd class="col-sm-11 {{ 'mb-0' if not loop.last }} compact-text">{{ answer }}</dd>
+            </dl>
+        {% endfor %}
     </div>
 {% endmacro %}

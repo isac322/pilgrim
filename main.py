@@ -1,7 +1,7 @@
 import http
 import json
 from pathlib import Path
-from typing import Sequence, Tuple
+from typing import Any, Mapping, Sequence, Tuple
 
 import aiofiles
 from aiocache import cached
@@ -54,7 +54,7 @@ def validate_answer(body: form.QuizForm, cafe_names: Sequence[str], grade_names:
 
 
 @cached()
-async def _read_json_resource(file_path: Path) -> str:
+async def _read_json_resource(file_path: Path) -> Any:
     async with aiofiles.open(file_path) as fp:
         return json.loads(await fp.read())
 
@@ -69,6 +69,7 @@ async def index(request: Request):
     qnas = await _read_json_resource(_settings.resource_path / 'qna.json')
     grade_names = await _read_json_resource(_settings.resource_path / GRADE_NAME_FILE_NAME)
     cafe_names = await _read_json_resource(_settings.resource_path / CAFE_NAME_FILE_NAME)
+    interviewer_map: Mapping[str, str] = await _read_json_resource(_settings.resource_path / 'interviewer_map.json')
     image_path_list = map(
         lambda p: request.url_for('images', path=p),
         await _list_image_files(_settings.resource_path / _settings.image_path),
@@ -79,6 +80,7 @@ async def index(request: Request):
         dict(
             request=request,
             qnas=enumerate(qnas),
+            interviewer_map=interviewer_map,
             offset=_settings.question_offset,
             cafe_names=enumerate(cafe_names),
             grade_names=enumerate(grade_names),
