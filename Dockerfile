@@ -9,7 +9,8 @@ FROM isac322/uvicorn:py3.9-performance
 MAINTAINER 'Byeonghoon Isac Yoo <bh322yoo@gmail.com>'
 
 COPY --from=dep /tmp/requirements.txt /tmp/requirements.txt
-RUN apk add --update --no-cache --virtual .build-deps g++ linux-headers \
+RUN apk add --update --no-cache libstdc++ \
+    && apk add --update --no-cache --virtual .build-deps g++ linux-headers \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
     && apk --purge del .build-deps
 COPY . /pilgrim/
