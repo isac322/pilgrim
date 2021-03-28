@@ -17,12 +17,16 @@ import config
 import form
 import models
 
+_settings = config.Settings()
+
+GRADE_NAME_FILE_NAME = 'grade_names.json'
+CAFE_NAME_FILE_NAME = 'cafe_names.json'
+
 app = FastAPI(title='Pilgrim', version='0.2.9', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
-app.mount('/img', StaticFiles(directory='resource/images'), name='images')
+app.mount('/img', StaticFiles(directory=str(_settings.resource_path / _settings.image_path)), name='images')
 _templates = Jinja2Templates(directory='templates')
 
-_settings = config.Settings()
 
 if _settings.dd_on:
     patch_all()
@@ -30,8 +34,8 @@ if _settings.dd_on:
 
 @app.post('/answer')
 async def submit_answer(body: form.QuizForm):
-    grade_names = await _read_json_resource(_settings.grade_names_file_path)
-    cafe_names = await _read_json_resource(_settings.cafe_names_file_path)
+    grade_names = await _read_json_resource(_settings.resource_path / GRADE_NAME_FILE_NAME)
+    cafe_names = await _read_json_resource(_settings.resource_path / CAFE_NAME_FILE_NAME)
 
     if validate_answer(body, cafe_names, grade_names):
         await models.Answer.create(
@@ -62,10 +66,13 @@ async def _list_image_files(parent_path: Path) -> Tuple[str, ...]:
 
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
-    qnas = await _read_json_resource(_settings.qna_file_path)
-    grade_names = await _read_json_resource(_settings.grade_names_file_path)
-    cafe_names = await _read_json_resource(_settings.cafe_names_file_path)
-    image_path_list = map(lambda p: request.url_for('images', path=p), await _list_image_files(_settings.image_path))
+    qnas = await _read_json_resource(_settings.resource_path / 'qna.json')
+    grade_names = await _read_json_resource(_settings.resource_path / GRADE_NAME_FILE_NAME)
+    cafe_names = await _read_json_resource(_settings.resource_path / CAFE_NAME_FILE_NAME)
+    image_path_list = map(
+        lambda p: request.url_for('images', path=p),
+        await _list_image_files(_settings.resource_path / _settings.image_path),
+    )
 
     return _templates.TemplateResponse(
         'index.html',
