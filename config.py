@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     grade_names_file_path: FilePath = 'resource/grade_names.json'
     cafe_names_file_path: FilePath = 'resource/cafe_names.json'
     db_url: str = 'sqlite://db.sqlite3'
+    dd_on: bool = False
 
     class Config:
         env_prefix = 'pilgrim_'
