@@ -24,7 +24,7 @@ GRADE_NAME_FILE_NAME = 'grade_names.json'
 CAFE_NAME_FILE_NAME = 'cafe_names.json'
 QUIZ_FILE_NAME = 'quiz.json'
 
-app = FastAPI(title='Pilgrim', version='0.3.0', docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title='Pilgrim', version='0.3.1', docs_url=None, redoc_url=None, openapi_url=None)
 app.mount('/static', StaticFiles(directory='static'), name='static')
 app.mount('/img', StaticFiles(directory=str(_settings.resource_path / _settings.image_path)), name='images')
 _templates = Jinja2Templates(directory='templates')
