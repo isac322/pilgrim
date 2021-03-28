@@ -13,14 +13,15 @@
          data-bs-pause="hover">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-            {% for i, image_name in image_names %}
-                <li data-bs-target="#gallery" data-bs-slide-to="{{ i }}" {{ 'class="active"' if i == 0 }}></li>
+            {% for image_name in image_names %}
+                <li data-bs-target="#gallery" data-bs-slide-to="{{ loop.index0 }}" {{ 'class="active"' if loop.first }}>
+                </li>
             {% endfor %}
         </ol>
         <!-- Wrapper for slides -->
         <div class="carousel-inner spotlight-group">
-            {% for i, image_path in image_names %}
-                <div class="spotlight carousel-item {{ 'active' if i == 0 }}" data-src="{{ image_path }}">
+            {% for image_path in image_names %}
+                <div class="spotlight carousel-item {{ 'active' if loop.first }}" data-src="{{ image_path }}">
                     <img class="img-fluid lazyload" data-sizes="auto" data-src="{{ image_path }}"/>
                 </div>
             {% endfor %}

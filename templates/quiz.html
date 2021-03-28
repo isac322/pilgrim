@@ -29,13 +29,13 @@
     </style>
 {% endmacro %}
 
-{% macro html(cafe_names, grade_names) %}
+{% macro html(cafe_names, grade_names, quiz_dict, quiz_deadline) %}
     <div class="d-flex flex-column tall-line mb-5">
         <div class="d-flex flex-row align-items-baseline">
             <strong class="question-number">Quiz.</strong>
-            <span class="text-decoration-underline red-text question-text compact-text">병훈이가 만남을 시작할 때 고백한 교회 근처의 카페는 어디일까요?</span>
+            <span class="text-decoration-underline red-text question-text compact-text">{{ quiz_dict['quiz'] }}</span>
         </div>
-        <small class="text-muted compact-text mb-3"><strong>키링 이벤트</strong>&mdash;정답자 중 5명 추첨 (4/11일 마감)</small>
+        <small class="text-muted compact-text mb-3"><strong>{{ quiz_dict['event_title'] }}</strong>&mdash;{{ quiz_dict['description'] }} ({{ '{}/{} {}:{}'.format(quiz_deadline.month, quiz_deadline.day, quiz_deadline.hour, quiz_deadline.minute) }} 마감)</small>
         <form id="event-answer" action="/answer" class="needs-validation" novalidate>
             <fieldset class="row g-3">
                 <div class="col-sm-6 col-md">
@@ -50,8 +50,8 @@
                                 name="grade_name"
                                 required>
                             <option value="" selected disabled>학년 이름을 선택해주세요.</option>
-                            {% for i, name in grade_names %}
-                                <option value="{{ i }}">{{ name }}</option>
+                            {% for name in grade_names %}
+                                <option value="{{ loop.index0 }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                         <label for="grade-select" class="compact-text">학년 이름</label>
@@ -61,8 +61,8 @@
                     <div class="form-floating">
                         <select class="form-select" id="cafe-select" name="cafe_name" multiple required
                                 aria-label="Cafe name near Sarang Curch">
-                            {% for i, name in cafe_names %}
-                                <option value="{{ i }}">{{ name }}</option>
+                            {% for name in cafe_names %}
+                                <option value="{{ loop.index0 }}">{{ name }}</option>
                             {% endfor %}
                         </select>
                         <label for="cafe-select" class="compact-text">카페 이름&mdash;최대 2개 선택</label>
