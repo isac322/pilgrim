@@ -1,5 +1,10 @@
-{% macro head_script() %}
+{% macro head() %}
     <script src="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/spotlight.cdn.js"></script>
+    <style>
+        #spotlight {
+            left: 0;
+        }
+    </style>
 {% endmacro %}
 
 {% macro html(image_names) %}
